@@ -6,38 +6,55 @@ import xlwt
 
 ANSWER = 'Кода нет!'
 TITLE_LIST = [
-    'Идентификатор',
+    '№ п.п',
+    'Код Восход',
     'Код в 1C',
-    'Артикул произв',
+    'Арт.',
     'Наименование',
-    'Количество',
+    'Кол-во',
+    'Единица',
     'Цена',
     'Сумма'
     ]
 
 PATH_EXTAKE = 'c:/Intake/{}.xls'
-INFO = 'Программа поиска и сопоставления кодов 1С с исходными данными накладной поставщика ТД Восход'
+INFO = (
+    'Программа поиска и сопоставления кодов 1С'
+    'с исходными данными накладной поставщика ТД Восход')
 
+"Table style setings"
+title_doc_string = 'font: bold on, height 280;'
+table_title_string = (
+    'font: bold on; align: wrap 1;'
+    'borders: top 2,'
+    'right 2, bottom 2, left 2')
+base_style_string = (
+    'font: bold off; align: wrap 1;'
+    'border: top 0x1, right 0x1, bottom 0x1, left 0x1')
+code_staly_string = (
+    'font: bold on;'
+    'border: top 0x1, right 0x1, bottom 0x1, left 0x1')
 
-style_string = 'font: bold on; align: wrap 1; borders: top 2, right 2, bottom 2, left 2'
-style_string1 = 'font: bold off; align: wrap 1; border: top 0x1, right 1, bottom 1, left 1'
-style_string2 = 'font: bold on; align: wrap 1; border: top 0x1, right 1, bottom 1, left 1'
-style = xlwt.easyxf(style_string)
-style1 = xlwt.easyxf(style_string1, num_format_str='0')
-style2 = xlwt.easyxf(style_string1)
-style3 = xlwt.easyxf(style_string2)
-
+title_style = xlwt.easyxf(title_doc_string)
+table_title_style = xlwt.easyxf(table_title_string)
+base_style = xlwt.easyxf(base_style_string, num_format_str='0')
+code_style = xlwt.easyxf(code_staly_string)
+quent_style = xlwt.easyxf(base_style_string, num_format_str='0')
+price_style = xlwt.easyxf(base_style_string, num_format_str='#,##0.00')
 
 Vcode = list()
 otvet = list()
+number = list()
 code_list = list()
 art_list = list()
 name_list = list()
 quent_list = list()
 price_list = list()
+size = list()
 amount_list = list()
-after_action_list = list()
+intake_list = list()
 titles_list = list()
+agent_list = list()
 
 
 def bild_list():
@@ -64,35 +81,41 @@ def return_1C_code(code_list):
                 otvet = result[0]
         else:
             otvet = ANSWER
-        after_action_list.append(otvet)
+        intake_list.append(otvet)
     con.commit()
     con.close()
-    return after_action_list
+    return intake_list
 
 
 def answer_from_exel_file(path_intake):
-    "Обработка входящт данных исходной таблицы"
+    "Обработка входящих данных исходной таблицы"
     rb = xlrd.open_workbook(path_intake)
     print("Листов книги Exel - {0}".format(rb.nsheets))
     print("Листы файла: {0}".format(rb.sheet_names()))
     sheet = rb.sheet_by_index(0)
     num = sheet.nrows
     title = sheet.cell(0, 0).value
+    agent = sheet.cell(1, 2).value
     totals = sheet.cell(num-1, 9).value
-    for rx in range(2, num-1):
+    for rx in range(4, num-1):
+        code = sheet.row(rx)[0].value
+        number.append(code)
         code = sheet.row(rx)[2].value
         code_list.append(code)
         code = sheet.row(rx)[3].value
         art_list.append(code)
         code = sheet.row(rx)[5].value
         name_list.append(code)
-        code = sheet.row(rx)[7].value
-        quent_list.append(code)
+        code = sheet.row(rx)[6].value
+        size.append(code)
         code = sheet.row(rx)[8].value
         price_list.append(code)
+        code = sheet.row(rx)[7].value
+        quent_list.append(code)
         code = sheet.row(rx)[9].value
         amount_list.append(code)
     titles_list.append(title)
+    agent_list.append(agent)
     titles_list.append(totals)
 
 
@@ -100,26 +123,33 @@ def write_new_data():
     "Таблица данных постобработки"
     book = xlwt.Workbook(encoding="utf-8")
     sheet1 = book.add_sheet("Накладная")
-    sheet1.write(0, 0, titles_list[0])
-    for num in range(7):
-        sheet1.write(1, num, TITLE_LIST[num], style=style3)
-    for num in range(2, len(code_list)):
-        sheet1.write(num, 0, code_list[num], style=style2)
-        sheet1.write(num, 1, parse_code(after_action_list[num]), style=style3)
-        sheet1.write(num, 2, art_list[num], style=style1)
-        sheet1.write(num, 3, name_list[num], style=style2)
-        sheet1.write(num, 4, quent_list[num], style=style2)
-        sheet1.write(num, 5, price_list[num], style=style2)
-        sheet1.write(num, 6, amount_list[num], style=style2)
-    sheet1.write(len(code_list)+1, 6, titles_list[1])
-    sheet1.col(3).width = 18000
-    sheet1.col(2).width = 4000
-    sheet1.col(1).width = 2800
-    sheet1.col(0).width = 3000
+    sheet1.write(0, 0, titles_list[0], style=title_style)
+    sheet1.write(1, 0, agent_list[0], style=title_style)
+    for num in range(9):
+        sheet1.write(4, num, TITLE_LIST[num], style=table_title_style)
+    for num in range(0, len(code_list)):
+        col = num+5
+        sheet1.write(col, 0, number[num], style=base_style)
+        sheet1.write(col, 1, code_list[num], style=base_style)
+        sheet1.write(col, 2, parse_code(intake_list[num]), style=code_style)
+        sheet1.write(col, 3, art_list[num], style=base_style)
+        sheet1.write(col, 4, name_list[num], style=base_style)
+        sheet1.write(col, 5, quent_list[num], style=quent_style)
+        sheet1.write(col, 6, size[num], style=base_style)
+        sheet1.write(col, 7, price_list[num], style=price_style)
+        sheet1.write(col, 8, amount_list[num], style=price_style)
+    sheet1.write(len(code_list)+5, 7, "Итого:", style=price_style)
+    sheet1.write(len(code_list)+5, 8, titles_list[1], style=price_style)
+    sheet1.col(0).width = 1500
+    sheet1.col(1).width = 3000
+    sheet1.col(2).width = 2300
+    sheet1.col(3).width = 4000
+    sheet1.col(4).width = 18000
     book.save(PATH_EXTAKE.format(titles_list[0]))
 
 
 def parse_code(code):
+    "Формат "
     code = str(code)
     if len(code) == 3:
         code = f'00{code}'
@@ -131,11 +161,12 @@ def parse_code(code):
 
 
 def main(path_intake):
+    "Вход в программу"
     answer_from_exel_file(path_intake)
     bild_list()
     return_1C_code(code_list)
     print("Число записей - {}".format(len(code_list)))
-    print("Число записей - {}".format(len(after_action_list)))
+    print("Число записей - {}".format(len(intake_list)))
     write_new_data()
     print("Обработка завершена!")
 

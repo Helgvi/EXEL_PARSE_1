@@ -1,4 +1,4 @@
-from tkinter import Tk, Button, Label, messagebox
+from tkinter import Tk, Button, Label
 
 from tkinter.filedialog import askopenfile
 
@@ -7,7 +7,7 @@ import parse_xls
 
 INFO = 'Программа поиска и сопоставления кодов 1С с исходными данными накладной поставщика ТД Восход.'
 INFO_1 = '\n 1. Выберите файл накладной ТД Восход для начала работы программы'
-INFO_ENDING = '2. После обработки будет создан Exel файл накладной с кодами 1С.\nПо умолчанию, файл будет сохранен в папке C:\\Intake\ на вашем компьютере.'
+INFO_ENDING = '2. После обработки будет создан Exel файл накладной с кодами 1С. \nПо умолчанию, файл будет сохранен в папке C:\Intake\ на вашем компьютере.'
 
 
 myroot = Tk()
