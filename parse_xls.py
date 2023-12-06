@@ -1,8 +1,8 @@
 import sqlite3
 
 import xlrd
-
 import xlwt
+
 
 ANSWER = 'Кода нет!'
 TITLE_LIST = [
@@ -168,7 +168,7 @@ def main(path_intake):
     print("Число записей - {}".format(len(code_list)))
     print("Число записей - {}".format(len(intake_list)))
     write_new_data()
-    print("Обработка завершена!")
+    return 'Выполнено!'
 
 
 if __name__ == '__main__':

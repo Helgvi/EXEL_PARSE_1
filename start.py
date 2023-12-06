@@ -1,14 +1,17 @@
-from tkinter import Tk, Button, Label
+from tkinter import Tk, Button, Label, messagebox
 
 from tkinter.filedialog import askopenfile
 
 import parse_xls
 
 
-INFO = 'Программа поиска и сопоставления кодов 1С с исходными данными накладной поставщика ТД Восход.'
+INFO = (
+    'Программа поиска и сопоставления кодов 1С '
+    'с исходными данными накладной поставщика ТД Восход.')
 INFO_1 = '\n 1. Выберите файл накладной ТД Восход для начала работы программы'
-INFO_ENDING = '2. После обработки будет создан Exel файл накладной с кодами 1С. \nПо умолчанию, файл будет сохранен в папке C:\Intake\ на вашем компьютере.'
-
+INFO_ENDING = (
+    '2. После обработки будет создан Exel файл накладной с кодами 1С. \n'
+    'По умолчанию, файл будет сохранен в папке c:\Intake на вашем компьютере.')
 
 myroot = Tk()
 myroot.title("Поисковик кода 1С")
@@ -41,11 +44,19 @@ text_unit_1.pack()
 
 
 def myopen_file():
+    """Выбор файла"""
     myfile = askopenfile(mode='r', filetypes=[('All Python Files', '*.xls')])
     if myfile is not None:
-        parse_xls.main(myfile.name)
+        msg = parse_xls.main(myfile.name)
+        mydisplay(msg)
     else:
-        print('Файл не выбран!')
+        mydisplay('Файл не выбран!')
+
+
+def mydisplay(massage):
+    """Окно сообщений"""
+    messagebox.showinfo("Сообщение", massage)
+    exit()
 
 
 text_unit_2.pack()

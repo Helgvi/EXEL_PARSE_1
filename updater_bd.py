@@ -21,7 +21,7 @@ def create_bd():
 
 def import_table_to_bd(index):
     cur = con.cursor()
-    wb = openpyxl.load_workbook(filename='C:\Price.xlsx', read_only=True)
+    wb = openpyxl.load_workbook(filename='c:\Price.xlsx', read_only=True)
     list_name = wb.sheetnames
     sheet = wb[list_name[1]]
     i = index
