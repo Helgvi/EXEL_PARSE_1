@@ -2,6 +2,7 @@ from tkinter import Tk, Button, Label, messagebox
 
 from tkinter.filedialog import askopenfile
 
+import sys
 import parse_xls
 
 
@@ -56,7 +57,7 @@ def myopen_file():
 def mydisplay(massage):
     """Окно сообщений"""
     messagebox.showinfo("Сообщение", massage)
-    exit()
+    sys.exit()
 
 
 text_unit_2.pack()
