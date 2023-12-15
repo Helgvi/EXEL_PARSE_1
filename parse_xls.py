@@ -76,9 +76,9 @@ def return_1C_code(code_list):
     cur = con.cursor()
     for code in code_list:
         if Vcode.count(code) != 0:
-            sql = 'SELECT Ccode FROM goods WHERE Vcode = ?;'
+            sql = 'SELECT Vcode FROM goods WHERE Ccode = ?;'
             for result in cur.execute(sql, [code]):
-                otvet = result[0]
+                otvet = result
         else:
             otvet = ANSWER
         intake_list.append(otvet)
